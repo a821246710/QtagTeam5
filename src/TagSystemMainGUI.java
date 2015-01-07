@@ -16,12 +16,17 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.ArrayList;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Box;
 import javax.swing.JTable;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class TagSystemMainGUI extends JFrame {
@@ -33,10 +38,14 @@ public class TagSystemMainGUI extends JFrame {
 	private JButton btnNewButton_2;
 	private JLabel lblNewLabel;
 	private JTable table;
+	private DefaultTableModel tmodel;
+	
+	String RootDirPath = "C:\\Users\\joy\\Desktop\\軟體工程";
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {	
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -67,6 +76,16 @@ public class TagSystemMainGUI extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode( ) == KeyEvent.VK_ENTER){
+					String tempT = textField.getText();
+					RootDirPath = tempT;
+					refreshTable();
+				}					
+			}
+		});
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.anchor = GridBagConstraints.NORTH;
 		gbc_textField.insets = new Insets(0, 0, 5, 50);
@@ -100,8 +119,9 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton_2.gridy = 0;
 		contentPane.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		lblNewLabel = new JLabel("Root Directory");
+		lblNewLabel = new JLabel("Root Directory : " + RootDirPath);
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.gridwidth = 4;
 		gbc_lblNewLabel.weighty = 10.0;
 		gbc_lblNewLabel.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_lblNewLabel.insets = new Insets(0, 10, 5, 5);
@@ -109,7 +129,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_lblNewLabel.gridy = 1;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
 		
-		DefaultTableModel tmodel = new DefaultTableModel(){
+		tmodel = new DefaultTableModel(){
 			@Override
 		    public boolean isCellEditable(int row, int column) {
 		       //all cells can't be edit
@@ -118,21 +138,7 @@ public class TagSystemMainGUI extends JFrame {
 		};
 		tmodel.addColumn("File Path"); 
 		tmodel.addColumn("Tags"); 
-		//Simulation data
-		tmodel.addRow(new Object[]{"Hot/the Walking Dead.mp4", "horrible, zombie"});
-		tmodel.addRow(new Object[]{"Hot/the Goddather.mp4", "god"});
-		tmodel.addRow(new Object[]{"Poster/Annabelle.jpg", "horrible, doll"});
-		tmodel.addRow(new Object[]{"Poster/Blood Diamond.jpg", "documentary, diamond, rebel"});
-		tmodel.addRow(new Object[]{"Poster/Toy Story.jpg", "cartoon"});
-		tmodel.addRow(new Object[]{"Japan/Howl's Moving Castle.mp4", ""});
-		tmodel.addRow(new Object[]{"StickDriver/Japanese gril.avi", "educational"});
-		tmodel.addRow(new Object[]{"辦公用資料夾/MDF51DR/20150117.avi", "educational"});
-		tmodel.addRow(new Object[]{"v1", "v2"});
-		tmodel.addRow(new Object[]{"v1", "v2"});
-		tmodel.addRow(new Object[]{"v1", "v2"});
-		tmodel.addRow(new Object[]{"v1", "v2"});
-		tmodel.addRow(new Object[]{"v1", "v2"});
-		//Simulation data end
+		refreshTable();
 		table = new JTable(tmodel);		
 		GridBagConstraints gbc_table = new GridBagConstraints();
 		gbc_table.weighty = 100.0;
@@ -142,9 +148,30 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_table.gridx = 0;
 		gbc_table.gridy = 3;
 		contentPane.add(new JScrollPane(table),gbc_table);
-		table.getTableHeader().setReorderingAllowed(false); //關閉拖動欄位功能
+		table.getTableHeader().setReorderingAllowed(false); //關閉拖動欄位功能		
+	
+	}
+	
+	void refreshTable(){
+		tmodel.setRowCount(0);
+		ArrayList<String> fileList;
+		TagSystem TS = new TagSystem();
+		TS.flieManager.fetchAllFromDB(TS.data,TS.tags);
 		
+		for(Data d : TS.data){
+			String tags="";
+			for(Tag t : d.tags)
+				tags += t.name+", ";
+			tmodel.addRow(new Object[]{d.getPath(), tags});
+		}
+		/*fileList = TS.flieManager.listFile(new File(RootDirPath),"");
+		for(String filePath : fileList){
+			tmodel.addRow(new Object[]{filePath, ""});
+			//create Data object
+			TS.data.add(new Data(filePath));
+		}*/
 		
+		//TS.flieManager.putAllBackToDB(TS.data,new ArrayList<Tag>());
 	}
 
 }
