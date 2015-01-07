@@ -1,9 +1,11 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridLayout;
@@ -41,11 +43,12 @@ public class TagSystemMainGUI extends JFrame {
 	private DefaultTableModel tmodel;
 	
 	String RootDirPath = "C:\\Users\\joy\\Desktop\\≥n≈È§uµ{";
+	TagSystem tagSystem = new TagSystem();
+	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {	
-		
+	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -62,6 +65,8 @@ public class TagSystemMainGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public TagSystemMainGUI() {
+		init();
+		
 		setTitle("QTag");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -139,7 +144,9 @@ public class TagSystemMainGUI extends JFrame {
 		tmodel.addColumn("File Path"); 
 		tmodel.addColumn("Tags"); 
 		refreshTable();
-		table = new JTable(tmodel);		
+		table = new JTable(tmodel);
+		MyRenderer myRenderer = new MyRenderer();
+		table.setDefaultRenderer(Object.class, myRenderer);
 		GridBagConstraints gbc_table = new GridBagConstraints();
 		gbc_table.weighty = 100.0;
 		gbc_table.gridwidth = 4;
@@ -152,26 +159,50 @@ public class TagSystemMainGUI extends JFrame {
 	
 	}
 	
+	void init(){
+		//load data
+		tagSystem.flieManager.fetchAllFromDB(tagSystem.data,tagSystem.tags);
+		//scan file
+		ArrayList<String> fileList = tagSystem.flieManager.listFile(new File(RootDirPath),"");
+		for(String filePath : fileList){
+			/* To check whether the file is exist and have tags */
+			for(Data d : tagSystem.data){
+				if(d.path.equals(filePath)){
+					d.isExist = true;
+					if(d.tags.isEmpty())
+						d.isEmptyTags = true;
+					break;
+				}
+			}
+		}
+	}
+	
 	void refreshTable(){
 		tmodel.setRowCount(0);
-		ArrayList<String> fileList;
-		TagSystem TS = new TagSystem();
-		TS.flieManager.fetchAllFromDB(TS.data,TS.tags);
-		
-		for(Data d : TS.data){
+		for(Data d : tagSystem.data){
 			String tags="";
 			for(Tag t : d.tags)
 				tags += t.name+", ";
 			tmodel.addRow(new Object[]{d.getPath(), tags});
-		}
-		/*fileList = TS.flieManager.listFile(new File(RootDirPath),"");
-		for(String filePath : fileList){
-			tmodel.addRow(new Object[]{filePath, ""});
-			//create Data object
-			TS.data.add(new Data(filePath));
-		}*/
-		
-		//TS.flieManager.putAllBackToDB(TS.data,new ArrayList<Tag>());
+		}		
 	}
 
+	
+	public class MyRenderer extends DefaultTableCellRenderer  
+	{ 
+	    public Component getTableCellRendererComponent(JTable table, Object value, boolean   isSelected, boolean hasFocus, int row, int column) 
+		{ 
+		    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
+	
+		    if(!tagSystem.data.get(row).isExist)
+		        c.setBackground(new java.awt.Color(255, 0, 0));
+		    else if(tagSystem.data.get(row).isEmptyTags)
+		    	c.setBackground(new java.awt.Color(255, 255, 0));
+		    else
+		        c.setBackground(table.getBackground());
+	
+		    return c; 
+		} 
+
+	} 
 }

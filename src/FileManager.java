@@ -32,8 +32,8 @@ public class FileManager {
 		try(BufferedReader br = new BufferedReader(new InputStreamReader
 				(new FileInputStream(new File("data\\Data.txt").getAbsoluteFile()), "UTF-8"))) {
 	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
-
+	        String line = br.readLine();	//skip first empty line
+	        line = br.readLine();
 	        while (line != null) {            
 	            String[] ss = line.split("\\:");
 	            Data newData = new Data(ss[0]);
@@ -67,9 +67,9 @@ public class FileManager {
 	
 	void putAllBackToDB(ArrayList<Data> data,ArrayList<Tag> tags){
 		File Datafile = new File("data\\Data.txt").getAbsoluteFile();//建立檔案，準備寫檔
-		File Tagsfile = new File("data\\Tags.txt").getAbsoluteFile();//建立檔案，準備寫檔
         try{
             BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Datafile,false),"utf8"));
+            bufWriter.write(System.lineSeparator());	//first empty line
             for(Data d : data){
             	bufWriter.write(d.getPath() + System.lineSeparator());           
             }
