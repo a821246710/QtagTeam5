@@ -14,8 +14,11 @@ import java.util.List;
 
 public class FileManager {
 	
-	File rootDirectory = new File("C:\\Users\\joy\\Desktop\\³nÅé¤uµ{");
+	File rootDirectory = new File("~/Desktop/DataA/img");
 	
+	public FileManager() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	ArrayList<String> listFile(File folder, String parent){
 		folder = (folder == null) ? rootDirectory : folder;
@@ -35,7 +38,7 @@ public class FileManager {
 		
 		//try to load Data
 		try(BufferedReader br = new BufferedReader(new InputStreamReader
-				(new FileInputStream(new File("data\\Data.txt").getAbsoluteFile()), "UTF-8"))) {
+				(new FileInputStream(new File("./data/Data.txt").getAbsoluteFile()), "UTF-8"))) {
 	        StringBuilder sb = new StringBuilder();
 	        String line = br.readLine();	//skip first empty line
 	        line = br.readLine();
@@ -62,7 +65,7 @@ public class FileManager {
 			System.out.println("no such file");
 		} catch (IOException e) {			
 			e.printStackTrace();
-			System.out.println("ÅªÀÉµo¥Í¿ù»~");
+			System.out.println("Åªï¿½Éµoï¿½Í¿ï¿½~");
 		}	
 		
 		
@@ -70,7 +73,7 @@ public class FileManager {
 	}
 	
 	void putAllBackToDB(ArrayList<Data> data,ArrayList<Tag> tags){
-		File Datafile = new File("data\\Data.txt").getAbsoluteFile();//«Ø¥ßÀÉ®×¡A·Ç³Æ¼gÀÉ
+		File Datafile = new File("data\\Data.txt").getAbsoluteFile();//ï¿½Ø¥ï¿½ï¿½É®×¡Aï¿½Ç³Æ¼gï¿½ï¿½
         try{
             BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Datafile,false),"utf8"));
             bufWriter.write(System.lineSeparator());	//first empty line
@@ -80,7 +83,7 @@ public class FileManager {
             bufWriter.close();
         }catch(IOException e){
             e.printStackTrace();
-            System.out.println("¼gÀÉµo¥Í¿ù»~");
+            System.out.println("ï¿½gï¿½Éµoï¿½Í¿ï¿½~");
         }
         
 	}

@@ -178,7 +178,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_table.gridx = 0;
 		gbc_table.gridy = 3;
 		contentPane.add(new JScrollPane(table),gbc_table);
-		table.getTableHeader().setReorderingAllowed(false); //關閉拖動欄位功能=
+		table.getTableHeader().setReorderingAllowed(false); 	
 	}
 	
 	void init(){
