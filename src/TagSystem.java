@@ -10,6 +10,11 @@ public class TagSystem {
 		
 		ArrayList<String> fileList = flieManager.listFile(null);
 		ArrayList<Data> tempDL = new ArrayList<Data>();
+		// reset all data satus
+		for(Data d : data){
+			d.isEmptyTags = false;
+			d.isExist = false;
+		}
 		for(String filePath : fileList){
 			/* To check whether the file is exist and have tags */
 			boolean inData=false;
@@ -19,6 +24,8 @@ public class TagSystem {
 					d.isExist = true;
 					if(d.tags.isEmpty())
 						d.isEmptyTags = true;
+					else
+						d.isEmptyTags = false;
 					break;
 				}
 			}
@@ -32,4 +39,101 @@ public class TagSystem {
 		}
 		data.addAll(tempDL);
 	}
-}
+	
+	Data getData(int index){
+		return data.get(index);
+	}
+	
+	ArrayList<Tag> parseTags(String str, String delimiter){
+	
+		ArrayList<Tag> tTags = new ArrayList<Tag>();
+		String[] strTags = null;
+		//if str is empty
+		if(str.equals("") || str==null)
+			return tTags;
+		//parse search text
+		if(delimiter.equals("&&")){
+			strTags = str.split(" *\\&& *");
+			for(int i=0;i<strTags.length;i++){
+				Tag pTag = null;
+				boolean in_tags=false;
+				for(Tag t : tags){
+					if(t.name.equals(strTags[i])){
+						pTag = t;
+						in_tags = true;
+						break;
+					}
+				}
+				if(!in_tags){
+					//if the tag user enter dose not exist than return empty List
+					return new ArrayList<Tag>();
+				}	
+				tTags.add(pTag);
+			}
+		}
+		//parse edit text
+		else if(delimiter.equals(",")){			
+			strTags = str.split(" *\\, *");			
+			for(int i=0;i<strTags.length;i++){
+				Tag pTag = null;
+				boolean in_tags=false;
+				for(Tag t : tags){
+					if(t.name.equals(strTags[i])){
+						pTag = t;
+						in_tags = true;
+						break;
+					}
+				}
+				if(!in_tags){
+					pTag = new Tag(strTags[i]);
+					tags.add(pTag);
+					
+				}	
+				tTags.add(pTag);
+			}
+		}
+		
+		return tTags;		
+	}
+	
+	void setConnected(Data data, ArrayList<Tag> ALT){
+		data.tags = ALT;
+		for(Tag t : ALT){
+			if(!t.data.contains(data))
+				t.data.add(data);
+		}
+	}
+	
+	ArrayList<Data> search(String str){
+		
+		if(str.equals("") || str==null)
+			return this.data;
+		
+		ArrayList<Data> data = new ArrayList<Data>();
+		ArrayList<Tag> tags = parseTags(str,"&&");
+		
+		//find data that exist in every tags
+		for(Tag t : tags){			
+			for(Data d : t.data){
+				boolean in_all_tags=true;
+				for(Tag t2 : tags){
+					//d contains all t2 than in_all_tags will be true
+					in_all_tags = in_all_tags && d.tags.contains(t2);
+				}
+				if(in_all_tags && !data.contains(d))
+					data.add(d);
+			}
+		}
+		return data;
+	}
+} 
+
+
+
+
+
+
+
+
+
+

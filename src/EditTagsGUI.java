@@ -3,6 +3,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
@@ -20,22 +21,9 @@ public class EditTagsGUI extends JDialog {
 	private boolean OK=false;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			EditTagsGUI dialog = new EditTagsGUI();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
-	public EditTagsGUI() {
+	public EditTagsGUI(JFrame parent) {
 		setTitle("Edit Tags");
 		setBounds(100, 100, 450, 160);
 		getContentPane().setLayout(new BorderLayout());
@@ -51,6 +39,7 @@ public class EditTagsGUI extends JDialog {
 			buttonPane.setLayout(gbl_buttonPane);
 			{
 				textField = new JTextField();
+				textField.setText(((TagSystemMainGUI)parent).getTableData(((TagSystemMainGUI)parent).selectedRow,1));
 				GridBagConstraints gbc_textField = new GridBagConstraints();
 				gbc_textField.gridwidth = 2;
 				gbc_textField.insets = new Insets(0, 0, 5, 0);

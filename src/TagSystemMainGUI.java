@@ -48,6 +48,7 @@ public class TagSystemMainGUI extends JFrame {
 	private DefaultTableModel tmodel;
 	
 	TagSystem tagSystem = new TagSystem();
+	ArrayList<Data> tableData;	//Data List that used in current table 
 	int selectedRow = 0;
 	
 	/**
@@ -90,8 +91,8 @@ public class TagSystemMainGUI extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode( ) == KeyEvent.VK_ENTER){
-					String tempT = textField.getText();
-					refreshTable();
+					tagSystem.scanUptate();
+					refreshTable(tagSystem.search(textField.getText()));
 				}					
 			}
 		});
@@ -109,12 +110,16 @@ public class TagSystemMainGUI extends JFrame {
 		{
 		  public void actionPerformed(ActionEvent e)
 		  {		    
-		    EditTagsGUI edit = new EditTagsGUI();
+		    EditTagsGUI edit = new EditTagsGUI(frame);
 		    edit.setLocationRelativeTo(frame);
 		    edit.setModal(true);
 		    edit.setVisible(true);
-		    if(edit.OK())
-		    	System.out.print(edit.getText());
+		    if(edit.OK()){
+		    	tagSystem.setConnected(tagSystem.getData(selectedRow),
+		    			tagSystem.parseTags(edit.getText(),","));    	
+		    }
+		    tagSystem.scanUptate();
+		    refreshTable(tagSystem.data);
 		  }
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -159,7 +164,7 @@ public class TagSystemMainGUI extends JFrame {
 		};
 		tmodel.addColumn("File Path"); 
 		tmodel.addColumn("Tags"); 
-		refreshTable();
+		refreshTable(tagSystem.data);
 		table = new JTable(tmodel);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -189,14 +194,20 @@ public class TagSystemMainGUI extends JFrame {
 		tagSystem.scanUptate();
 	}
 	
-	void refreshTable(){
+	//refresh table with input data
+	void refreshTable(ArrayList<Data> data){
 		tmodel.setRowCount(0);
-		for(Data d : tagSystem.data){
+		tableData = data;
+		for(Data d : data){
 			String tags="";
 			for(Tag t : d.tags)
 				tags += t.name+", ";
 			tmodel.addRow(new Object[]{d.getPath(), tags});
-		}		
+		}
+	}
+	
+	String getTableData(int row, int col){
+		return (String)tmodel.getValueAt(row, col);
 	}
 
 	
@@ -206,9 +217,9 @@ public class TagSystemMainGUI extends JFrame {
 		{ 
 		    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
 	
-		    if(!tagSystem.data.get(row).isExist)
+		    if(!tableData.get(row).isExist)
 		        c.setBackground(new java.awt.Color(255, 0, 0));
-		    else if(tagSystem.data.get(row).isEmptyTags)
+		    else if(tableData.get(row).isEmptyTags)
 		    	c.setBackground(new java.awt.Color(255, 255, 0));
 		    else
 		        c.setBackground(table.getBackground());
