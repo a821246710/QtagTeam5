@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Window;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,9 +19,12 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -33,17 +37,18 @@ import java.awt.event.KeyEvent;
 
 public class TagSystemMainGUI extends JFrame {
 
+	private static TagSystemMainGUI frame;
 	private JPanel contentPane;
 	private JTextField textField;
-	private JButton btnNewButton;
+	private JButton btnEdit;
 	private JButton btnNewButton_1;
 	private JButton btnNewButton_2;
 	private JLabel lblNewLabel;
 	private JTable table;
 	private DefaultTableModel tmodel;
 	
-	String RootDirPath = "C:\\Users\\joy\\Desktop\\軟體工程";
 	TagSystem tagSystem = new TagSystem();
+	int selectedRow = 0;
 	
 	/**
 	 * Launch the application.
@@ -52,7 +57,7 @@ public class TagSystemMainGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TagSystemMainGUI frame = new TagSystemMainGUI();
+					frame = new TagSystemMainGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -86,7 +91,7 @@ public class TagSystemMainGUI extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode( ) == KeyEvent.VK_ENTER){
 					String tempT = textField.getText();
-					RootDirPath = tempT;
+					tagSystem.flieManager.rootDirectory = new File(tempT);
 					refreshTable();
 				}					
 			}
@@ -100,13 +105,24 @@ public class TagSystemMainGUI extends JFrame {
 		contentPane.add(textField, gbc_textField);
 		textField.setColumns(10);
 		
-		btnNewButton = new JButton("Edit");
+		btnEdit = new JButton("Edit");
+		btnEdit.addActionListener(new ActionListener()
+		{
+		  public void actionPerformed(ActionEvent e)
+		  {
+		    System.out.print(selectedRow);
+		    EditTagsGUI d = new EditTagsGUI();
+		    d.setLocationRelativeTo(frame);
+		    d.setModal(true);
+		    d.setVisible(true);
+		  }
+		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.anchor = GridBagConstraints.NORTH;
 		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton.gridx = 1;
 		gbc_btnNewButton.gridy = 0;
-		contentPane.add(btnNewButton, gbc_btnNewButton);
+		contentPane.add(btnEdit, gbc_btnNewButton);
 		
 		btnNewButton_1 = new JButton("Clear");
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
@@ -124,7 +140,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton_2.gridy = 0;
 		contentPane.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		lblNewLabel = new JLabel("Root Directory : " + RootDirPath);
+		lblNewLabel = new JLabel("Root Directory : " + tagSystem.flieManager.rootDirectory.toString());
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 4;
 		gbc_lblNewLabel.weighty = 10.0;
@@ -145,6 +161,13 @@ public class TagSystemMainGUI extends JFrame {
 		tmodel.addColumn("Tags"); 
 		refreshTable();
 		table = new JTable(tmodel);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//let we know which row user selected
+				selectedRow = table.rowAtPoint(e.getPoint());
+			}
+		});
 		MyRenderer myRenderer = new MyRenderer();
 		table.setDefaultRenderer(Object.class, myRenderer);
 		GridBagConstraints gbc_table = new GridBagConstraints();
@@ -155,26 +178,14 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_table.gridx = 0;
 		gbc_table.gridy = 3;
 		contentPane.add(new JScrollPane(table),gbc_table);
-		table.getTableHeader().setReorderingAllowed(false); //關閉拖動欄位功能		
-	
+		table.getTableHeader().setReorderingAllowed(false); //關閉拖動欄位功能=
 	}
 	
 	void init(){
 		//load data
 		tagSystem.flieManager.fetchAllFromDB(tagSystem.data,tagSystem.tags);
-		//scan file
-		ArrayList<String> fileList = tagSystem.flieManager.listFile(new File(RootDirPath),"");
-		for(String filePath : fileList){
-			/* To check whether the file is exist and have tags */
-			for(Data d : tagSystem.data){
-				if(d.path.equals(filePath)){
-					d.isExist = true;
-					if(d.tags.isEmpty())
-						d.isEmptyTags = true;
-					break;
-				}
-			}
-		}
+		//update file
+		tagSystem.scanUptate();
 	}
 	
 	void refreshTable(){

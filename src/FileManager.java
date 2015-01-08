@@ -14,7 +14,12 @@ import java.util.List;
 
 public class FileManager {
 	
-	ArrayList<String> listFile(final File folder, String parent){
+	File rootDirectory = new File("C:\\Users\\joy\\Desktop\\軟體工程");
+	
+	
+	ArrayList<String> listFile(File folder, String parent){
+		folder = (folder == null) ? rootDirectory : folder;
+		
 		ArrayList<String> A = new ArrayList<String>();
 		for (final File fileEntry : folder.listFiles()) {
 	        if (fileEntry.isDirectory()) {
@@ -53,9 +58,8 @@ public class FileManager {
 	            }	            	            
 	            line = br.readLine();
 	        }
-	    } catch (FileNotFoundException e) {			
-			e.printStackTrace();
-			System.out.println("讀檔發生錯誤");
+	    } catch (FileNotFoundException e) {	
+			System.out.println("no such file");
 		} catch (IOException e) {			
 			e.printStackTrace();
 			System.out.println("讀檔發生錯誤");
