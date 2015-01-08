@@ -10,12 +10,18 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridLayout;
+
 import javax.swing.JTextArea;
+
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+
 import javax.swing.JButton;
+
 import java.awt.GridBagConstraints;
+
 import javax.swing.JTextField;
+
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -24,6 +30,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -31,8 +38,16 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Box;
 import javax.swing.JTable;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.DropMode;
+import javax.swing.UIManager;
+import java.awt.Label;
 
 
 public class TagSystemMainGUI extends JFrame {
@@ -50,6 +65,10 @@ public class TagSystemMainGUI extends JFrame {
 	TagSystem tagSystem = new TagSystem();
 	ArrayList<Data> tableData;	//Data List that used in current table 
 	int selectedRow = 0;
+	private JMenuBar menuBar;
+	private JMenuItem mntmAbout;
+	private Component glue;
+	private JLabel lblNewLabel_1;
 	
 	/**
 	 * Launch the application.
@@ -76,6 +95,21 @@ public class TagSystemMainGUI extends JFrame {
 		setTitle("QTag");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		
+		
+		menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		lblNewLabel_1 = new JLabel("Account:");
+		menuBar.add(lblNewLabel_1);
+		
+		Component horizontalGlue = Box.createHorizontalGlue();
+		horizontalGlue.setBackground(UIManager.getColor("MenuItem.background"));
+		menuBar.add(horizontalGlue);
+		
+		
+		mntmAbout = new JMenuItem("Logout");
+		menuBar.add(mntmAbout);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(25, 25, 15, 25));
 		setContentPane(contentPane);
@@ -87,6 +121,8 @@ public class TagSystemMainGUI extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		textField = new JTextField();
+		textField.setHorizontalAlignment(SwingConstants.LEFT);
+		textField.setDropMode(DropMode.INSERT);
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
