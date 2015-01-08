@@ -91,7 +91,6 @@ public class TagSystemMainGUI extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode( ) == KeyEvent.VK_ENTER){
 					String tempT = textField.getText();
-					tagSystem.flieManager.rootDirectory = new File(tempT);
 					refreshTable();
 				}					
 			}
@@ -140,7 +139,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton_2.gridy = 0;
 		contentPane.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		lblNewLabel = new JLabel("Root Directory : " + tagSystem.flieManager.rootDirectory.toString());
+		lblNewLabel = new JLabel("Root Directory : " + tagSystem.flieManager.getRootDirectory().getAbsolutePath().toString());
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 4;
 		gbc_lblNewLabel.weighty = 10.0;

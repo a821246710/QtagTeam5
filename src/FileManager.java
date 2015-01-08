@@ -10,25 +10,61 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 
 public class FileManager {
 	
-	File rootDirectory = new File("~/Desktop/DataA/img");
+	private File dbPath = new File("./data.db"); 
 	
 	public FileManager() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	ArrayList<String> listFile(File folder, String parent){
-		folder = (folder == null) ? rootDirectory : folder;
+	public File getRootDirectory(){
+		String path = "";
+		
+		//try to load Data
+		try(BufferedReader br = new BufferedReader(new InputStreamReader
+				(new FileInputStream(dbPath), "UTF-8"))) {
+			
+	        path = br.readLine();	
+	        	        
+	    } catch (FileNotFoundException e) {	
+			System.out.println("db missing");
+			buildDB();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("somthing error");
+		}	
+		
+		return new File(path);
+	}
+	
+	private void buildDB(){
+		boolean result = false;
+		
+		if (!dbPath.exists()) {
+		    try{
+		        dbPath.createNewFile();
+		        result = true;
+		     } catch(IOException e){
+		        System.out.println("error occur, can't create database");
+		     }
+		    
+		     if(result) System.out.println("database created");  
+		  }
+	}
+	
+	ArrayList<String> listFile(File folder){
+		folder = (folder == null) ? getRootDirectory() : folder;
 		
 		ArrayList<String> A = new ArrayList<String>();
 		for (final File fileEntry : folder.listFiles()) {
 	        if (fileEntry.isDirectory()) {
-	        	A.addAll(listFile(fileEntry, parent + fileEntry.getName()+"/"));
+	        	A.addAll(listFile(fileEntry));
 	        } else {
-	            A.add(parent+fileEntry.getName());
+	            A.add(folder.getName() + "/" + fileEntry.getName());
 	        }
 	    }		
 		return A;
@@ -38,7 +74,7 @@ public class FileManager {
 		
 		//try to load Data
 		try(BufferedReader br = new BufferedReader(new InputStreamReader
-				(new FileInputStream(new File("./data/Data.txt").getAbsoluteFile()), "UTF-8"))) {
+				(new FileInputStream(dbPath), "UTF-8"))) {
 	        StringBuilder sb = new StringBuilder();
 	        String line = br.readLine();	//skip first empty line
 	        line = br.readLine();
@@ -63,27 +99,28 @@ public class FileManager {
 	        }
 	    } catch (FileNotFoundException e) {	
 			System.out.println("no such file");
+			buildDB();
 		} catch (IOException e) {			
 			e.printStackTrace();
-			System.out.println("Ū�ɵo�Ϳ�~");
+			System.out.println("somthing error");
 		}	
-		
-		
-		
 	}
 	
 	void putAllBackToDB(ArrayList<Data> data,ArrayList<Tag> tags){
-		File Datafile = new File("data\\Data.txt").getAbsoluteFile();//�إ��ɮסA�ǳƼg��
+
         try{
-            BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Datafile,false),"utf8"));
+            BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dbPath,false),"utf8"));
             bufWriter.write(System.lineSeparator());	//first empty line
             for(Data d : data){
             	bufWriter.write(d.getPath() + System.lineSeparator());           
             }
             bufWriter.close();
-        }catch(IOException e){
+        } catch (FileNotFoundException e) {	
+			System.out.println("no such file");
+			buildDB();
+		} catch(IOException e){
             e.printStackTrace();
-            System.out.println("�g�ɵo�Ϳ�~");
+            System.out.println("somthing error");
         }
         
 	}

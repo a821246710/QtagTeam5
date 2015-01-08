@@ -1,4 +1,4 @@
+bin/
 .settings/
 .metadata
-bin/
-data/
+data.db
