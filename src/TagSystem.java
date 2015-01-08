@@ -7,7 +7,8 @@ public class TagSystem {
 	ArrayList<Tag> tags = new ArrayList<Tag>();
 	
 	void scanUptate(){
-		ArrayList<String> fileList = flieManager.listFile(null,"");
+		
+		ArrayList<String> fileList = flieManager.listFile(null);
 		ArrayList<Data> tempDL = new ArrayList<Data>();
 		for(String filePath : fileList){
 			/* To check whether the file is exist and have tags */
