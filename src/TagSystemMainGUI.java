@@ -109,12 +109,13 @@ public class TagSystemMainGUI extends JFrame {
 		btnEdit.addActionListener(new ActionListener()
 		{
 		  public void actionPerformed(ActionEvent e)
-		  {
-		    System.out.print(selectedRow);
-		    EditTagsGUI d = new EditTagsGUI();
-		    d.setLocationRelativeTo(frame);
-		    d.setModal(true);
-		    d.setVisible(true);
+		  {		    
+		    EditTagsGUI edit = new EditTagsGUI();
+		    edit.setLocationRelativeTo(frame);
+		    edit.setModal(true);
+		    edit.setVisible(true);
+		    if(edit.OK())
+		    	System.out.print(edit.getText());
 		  }
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -178,7 +179,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_table.gridx = 0;
 		gbc_table.gridy = 3;
 		contentPane.add(new JScrollPane(table),gbc_table);
-		table.getTableHeader().setReorderingAllowed(false); //Ãö³¬©ì°ÊÄæ¦ì¥\¯à=
+		table.getTableHeader().setReorderingAllowed(false); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½=
 	}
 	
 	void init(){

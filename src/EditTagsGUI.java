@@ -8,11 +8,16 @@ import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.BoxLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class EditTagsGUI extends JDialog {
-
-	private final JPanel contentPanel = new JPanel();
+	private JTextField textField;
+	private boolean OK=false;
 
 	/**
 	 * Launch the application.
@@ -31,41 +36,61 @@ public class EditTagsGUI extends JDialog {
 	 * Create the dialog.
 	 */
 	public EditTagsGUI() {
-		setBounds(100, 100, 450, 300);
+		setTitle("Edit Tags");
+		setBounds(100, 100, 450, 160);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setLayout(new FlowLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
 			JPanel buttonPane = new JPanel();
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			buttonPane.setBorder(new EmptyBorder(20, 20, 10, 20));
+			getContentPane().add(buttonPane, BorderLayout.CENTER);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
-			gbl_buttonPane.columnWidths = new int[]{310, 49, 65, 0};
-			gbl_buttonPane.rowHeights = new int[]{23, 0};
-			gbl_buttonPane.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-			gbl_buttonPane.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+			gbl_buttonPane.columnWidths = new int[]{198, 0, 0};
+			gbl_buttonPane.rowHeights = new int[]{0, 0, 0, 0};
+			gbl_buttonPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+			gbl_buttonPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 			buttonPane.setLayout(gbl_buttonPane);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				GridBagConstraints gbc_okButton = new GridBagConstraints();
-				gbc_okButton.anchor = GridBagConstraints.NORTHWEST;
-				gbc_okButton.insets = new Insets(0, 0, 0, 5);
-				gbc_okButton.gridx = 1;
-				gbc_okButton.gridy = 0;
-				buttonPane.add(okButton, gbc_okButton);
-				getRootPane().setDefaultButton(okButton);
+				textField = new JTextField();
+				GridBagConstraints gbc_textField = new GridBagConstraints();
+				gbc_textField.gridwidth = 2;
+				gbc_textField.insets = new Insets(0, 0, 5, 0);
+				gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+				gbc_textField.gridx = 0;
+				gbc_textField.gridy = 0;
+				buttonPane.add(textField, gbc_textField);
+				textField.setColumns(10);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				GridBagConstraints gbc_cancelButton = new GridBagConstraints();
-				gbc_cancelButton.anchor = GridBagConstraints.NORTHWEST;
-				gbc_cancelButton.gridx = 2;
-				gbc_cancelButton.gridy = 0;
-				buttonPane.add(cancelButton, gbc_cancelButton);
+				JButton btn_OK = new JButton("OK");
+				btn_OK.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						OK=true;
+						dispose();
+					}
+				});
+				GridBagConstraints gbc_btn_OK = new GridBagConstraints();
+				gbc_btn_OK.insets = new Insets(0, 0, 0, 5);
+				gbc_btn_OK.gridx = 0;
+				gbc_btn_OK.gridy = 2;
+				buttonPane.add(btn_OK, gbc_btn_OK);
+			}
+			{
+				JButton btn_Cancel = new JButton("Cancel");
+				btn_Cancel.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
+				GridBagConstraints gbc_btn_Cancel = new GridBagConstraints();
+				gbc_btn_Cancel.gridx = 1;
+				gbc_btn_Cancel.gridy = 2;
+				buttonPane.add(btn_Cancel, gbc_btn_Cancel);
 			}
 		}
 	}
+	
+	String getText(){	return textField.getText();	}
+	
+	boolean OK(){	return OK;	}
 
 }

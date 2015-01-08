@@ -14,7 +14,7 @@ import java.util.List;
 
 public class FileManager {
 	
-	File rootDirectory = new File("C:\\Users\\joy\\Desktop\\³nÅé¤uµ{");
+	File rootDirectory = new File("C:/Users/joy/Desktop/è»Ÿé«”å·¥ç¨‹");
 	
 	
 	ArrayList<String> listFile(File folder, String parent){
@@ -62,15 +62,12 @@ public class FileManager {
 			System.out.println("no such file");
 		} catch (IOException e) {			
 			e.printStackTrace();
-			System.out.println("ÅªÀÉµo¥Í¿ù»~");
+			System.out.println("read file error");
 		}	
-		
-		
-		
 	}
 	
 	void putAllBackToDB(ArrayList<Data> data,ArrayList<Tag> tags){
-		File Datafile = new File("data\\Data.txt").getAbsoluteFile();//«Ø¥ßÀÉ®×¡A·Ç³Æ¼gÀÉ
+		File Datafile = new File("data\\Data.txt").getAbsoluteFile();
         try{
             BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Datafile,false),"utf8"));
             bufWriter.write(System.lineSeparator());	//first empty line
@@ -80,7 +77,7 @@ public class FileManager {
             bufWriter.close();
         }catch(IOException e){
             e.printStackTrace();
-            System.out.println("¼gÀÉµo¥Í¿ù»~");
+            System.out.println("wirte file error");
         }
         
 	}
