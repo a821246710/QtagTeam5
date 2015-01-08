@@ -48,11 +48,11 @@ public class FileManager {
 		    try{
 		        dbPath.createNewFile();
 		        result = true;
-		     } catch(IOException e){
-		        System.out.println("error occur, can't create database");
-		     }
+		    } catch(IOException e){
+		    	System.out.println("error occur, can't create database");
+		    }
 		    
-		     if(result) System.out.println("database created");  
+		    if(result) System.out.println("database created");  
 		}
 	}
 	
