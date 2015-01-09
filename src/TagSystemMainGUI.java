@@ -39,6 +39,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Box;
@@ -71,7 +72,7 @@ public class TagSystemMainGUI extends JFrame {
 	
 	TagSystem tagSystem = new TagSystem();
 	ArrayList<Data> tableData;	//Data List that used in current table 
-	int selectedRow = 0;
+	int selectedRow = -1;
 	private JMenuBar menuBar;
 	private JMenuItem mntmAbout;
 	private Component glue;
@@ -160,7 +161,7 @@ public class TagSystemMainGUI extends JFrame {
 		{
 		  public void actionPerformed(ActionEvent e)
 		  {		    
-			  if(selectedRow>=0){
+			  if(selectedRow>=0 && tableData.get(selectedRow).isExist){
 				  EditTagsGUI edit = new EditTagsGUI(frame);
 				  edit.setLocationRelativeTo(frame);
 				  edit.setModal(true);
@@ -191,6 +192,17 @@ public class TagSystemMainGUI extends JFrame {
 		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
 		
 		btnNewButton_2 = new JButton("Remove");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(selectedRow>=0 && !tableData.get(selectedRow).isExist &&
+						JOptionPane.showConfirmDialog((Component) null, "Are you sure?",
+						        "Remove file record don't exist", JOptionPane.OK_CANCEL_OPTION)
+						        	== 0){
+					tableData.remove(selectedRow);
+					refreshTable(tableData);
+				}
+			}
+		});
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.anchor = GridBagConstraints.NORTH;
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
