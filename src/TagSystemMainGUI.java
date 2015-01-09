@@ -6,8 +6,11 @@ import java.awt.Window;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
 
 import java.awt.GridLayout;
 
@@ -25,6 +28,8 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -155,16 +160,19 @@ public class TagSystemMainGUI extends JFrame {
 		{
 		  public void actionPerformed(ActionEvent e)
 		  {		    
-		    EditTagsGUI edit = new EditTagsGUI(frame);
-		    edit.setLocationRelativeTo(frame);
-		    edit.setModal(true);
-		    edit.setVisible(true);
-		    if(edit.OK()){
-		    	tagSystem.setConnected(tableData.get(selectedRow),
-		    			tagSystem.parseTags(edit.getText(),","));
-		    }
-		    tagSystem.scanUptate();
-		    refreshTable(tableData);
+			  if(selectedRow>=0){
+				  EditTagsGUI edit = new EditTagsGUI(frame);
+				  edit.setLocationRelativeTo(frame);
+				  edit.setModal(true);
+				  edit.setVisible(true);
+				  if(edit.OK()){
+				    tagSystem.setConnected(tableData.get(selectedRow),
+				    		tagSystem.parseTags(edit.getText(),","));
+				  }
+				  tagSystem.scanUptate();
+				  refreshTable(tableData);
+			  }
+			    
 		  }
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -210,14 +218,17 @@ public class TagSystemMainGUI extends JFrame {
 		tmodel.addColumn("File Path"); 
 		tmodel.addColumn("Tags"); 
 		refreshTable(tagSystem.data);
-		table = new JTable(tmodel);
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				//let we know which row user selected
-				selectedRow = table.rowAtPoint(e.getPoint());
-			}
-		});
+		table = new JTable(tmodel);		
+	    
+		table.setCellSelectionEnabled(true);
+	    ListSelectionModel cellSelectionModel = table.getSelectionModel();
+	    cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+	      public void valueChanged(ListSelectionEvent e) {
+	    	  selectedRow = table.getSelectedRow();
+	      }
+	    });	   
+	    
 		MyRenderer myRenderer = new MyRenderer();
 		table.setDefaultRenderer(Object.class, myRenderer);
 		GridBagConstraints gbc_table = new GridBagConstraints();
