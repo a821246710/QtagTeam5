@@ -48,6 +48,8 @@ import javax.swing.JMenuItem;
 import javax.swing.DropMode;
 import javax.swing.UIManager;
 import java.awt.Label;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class TagSystemMainGUI extends JFrame {
@@ -90,6 +92,13 @@ public class TagSystemMainGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public TagSystemMainGUI() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				tagSystem.flieManager.putAllBackToDB(tagSystem.data,tagSystem.tags);
+				System.exit(0);
+			}
+		});
 		init();
 		
 		setTitle("QTag");
@@ -151,11 +160,11 @@ public class TagSystemMainGUI extends JFrame {
 		    edit.setModal(true);
 		    edit.setVisible(true);
 		    if(edit.OK()){
-		    	tagSystem.setConnected(tagSystem.getData(selectedRow),
-		    			tagSystem.parseTags(edit.getText(),","));    	
+		    	tagSystem.setConnected(tableData.get(selectedRow),
+		    			tagSystem.parseTags(edit.getText(),","));
 		    }
 		    tagSystem.scanUptate();
-		    refreshTable(tagSystem.data);
+		    refreshTable(tableData);
 		  }
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();

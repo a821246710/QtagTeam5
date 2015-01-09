@@ -14,6 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.BoxLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class EditTagsGUI extends JDialog {
@@ -28,7 +30,7 @@ public class EditTagsGUI extends JDialog {
 		setBounds(100, 100, 450, 160);
 		getContentPane().setLayout(new BorderLayout());
 		{
-			JPanel buttonPane = new JPanel();
+			JPanel buttonPane = new JPanel();			
 			buttonPane.setBorder(new EmptyBorder(20, 20, 10, 20));
 			getContentPane().add(buttonPane, BorderLayout.CENTER);
 			GridBagLayout gbl_buttonPane = new GridBagLayout();
@@ -39,6 +41,15 @@ public class EditTagsGUI extends JDialog {
 			buttonPane.setLayout(gbl_buttonPane);
 			{
 				textField = new JTextField();
+				textField.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent arg0) {
+						if(arg0.getKeyCode( ) == KeyEvent.VK_ENTER){
+							OK=true;
+							dispose();
+						}
+					}
+				});
 				textField.setText(((TagSystemMainGUI)parent).getTableData(((TagSystemMainGUI)parent).selectedRow,1));
 				GridBagConstraints gbc_textField = new GridBagConstraints();
 				gbc_textField.gridwidth = 2;

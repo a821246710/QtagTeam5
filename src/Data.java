@@ -14,4 +14,16 @@ public class Data {
 	String getPath(){ return path; }
 	
 	ArrayList<Tag> getTags(){ return tags; }
+	
+	/* the lower or upper case are not different */
+	boolean hasTag(String tagName){
+		for(Tag t : tags){
+			if(t.name.toUpperCase().equals(tagName.toUpperCase()))
+				return true;
+		}
+		return false;
+	}
 } 
+
+
+

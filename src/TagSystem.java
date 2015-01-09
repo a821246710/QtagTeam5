@@ -55,20 +55,19 @@ public class TagSystem {
 		if(delimiter.equals("&&")){
 			strTags = str.split(" *\\&& *");
 			for(int i=0;i<strTags.length;i++){
-				Tag pTag = null;
 				boolean in_tags=false;
-				for(Tag t : tags){
-					if(t.name.equals(strTags[i])){
-						pTag = t;
+				for(Tag t : tags){					
+					if(t.name.toUpperCase().equals(strTags[i].toUpperCase())){		//search don't distinguish lower or upper case				
+						if(!tTags.contains(t)){
+							tTags.add(t);
+						}
 						in_tags = true;
-						break;
 					}
 				}
 				if(!in_tags){
 					//if the tag user enter dose not exist than return empty List
 					return new ArrayList<Tag>();
 				}	
-				tTags.add(pTag);
 			}
 		}
 		//parse edit text
@@ -104,6 +103,7 @@ public class TagSystem {
 		}
 	}
 	
+	// Upper case or lower case are not different  when search
 	ArrayList<Data> search(String str){
 		
 		if(str.equals("") || str==null)
@@ -112,13 +112,14 @@ public class TagSystem {
 		ArrayList<Data> data = new ArrayList<Data>();
 		ArrayList<Tag> tags = parseTags(str,"&&");
 		
-		//find data that exist in every tags
-		for(Tag t : tags){			
+		//find data that exist in every tags that we parsed
+		for(Tag t : tags){
+			//check the data we find has every tag that we parsed
 			for(Data d : t.data){
 				boolean in_all_tags=true;
 				for(Tag t2 : tags){
 					//d contains all t2 than in_all_tags will be true
-					in_all_tags = in_all_tags && d.tags.contains(t2);
+					in_all_tags = in_all_tags && d.hasTag(t2.name);
 				}
 				if(in_all_tags && !data.contains(d))
 					data.add(d);

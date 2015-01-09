@@ -16,6 +16,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class FileManager {
 	
 	private File dbPath = new File("./data.db");
+	private File rootDirectory = getRootDirectory();
 	
 	public FileManager() {
 		// TODO Auto-generated constructor stub
@@ -57,7 +58,7 @@ public class FileManager {
 	}
 	
 	ArrayList<String> listFile(File folder){
-		folder = (folder == null) ? getRootDirectory() : folder;
+		folder = (folder == null) ? rootDirectory : folder;
 		
 		ArrayList<String> A = new ArrayList<String>();
 		for (final File fileEntry : folder.listFiles()) {
@@ -83,17 +84,23 @@ public class FileManager {
 	            Data newData = new Data(ss[0]);
 	            data.add(newData);
 	            for(int i=1;i<ss.length;i++){
-	            	Tag t;
-	            	if(tags.contains(ss[i])){
-	            		t = tags.get(tags.indexOf(ss[i]));	
-	            		t.data.add(newData);
+	            	Tag inDataTag = null;
+	            	boolean in_tags=false;
+	            	for(Tag t : tags){
+	            		if(t.name.equals(ss[i])){
+	            			inDataTag = t;
+	            			t.data.add(newData);
+	            			in_tags = true;
+	            			break;
+	            		}
 	            	}
-	            	else{
-	            		t = new Tag(ss[i]);
-	            		tags.add(t);
+	            	if(!in_tags){
+	            		inDataTag = new Tag(ss[i]);
+	            		inDataTag.data.add(newData);
+	            		tags.add(inDataTag);	            		
 	            	}
 	            	
-	            	newData.tags.add(t);
+	            	newData.tags.add(inDataTag);
 	            }	            	            
 	            line = br.readLine();
 	        }
@@ -110,9 +117,13 @@ public class FileManager {
 	void putAllBackToDB(ArrayList<Data> data,ArrayList<Tag> tags){
         try{
             BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dbPath,false),"utf8"));
-            bufWriter.write(System.lineSeparator());	//first empty line
+            bufWriter.write(rootDirectory.getPath() + System.lineSeparator());	//first root-dir line
             for(Data d : data){
-            	bufWriter.write(d.getPath() + System.lineSeparator());           
+            	bufWriter.write(d.getPath());
+            	for(Tag t : d.tags){
+            		bufWriter.write(":" + t.name);
+            	}
+            	bufWriter.write(System.lineSeparator());
             }
             bufWriter.close();
         } catch (FileNotFoundException e) {	
