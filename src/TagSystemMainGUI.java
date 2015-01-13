@@ -64,7 +64,7 @@ public class TagSystemMainGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnEdit;
-	private JButton btnNewButton_1;
+	private JButton btnClear;
 	private JButton btnNewButton_2;
 	private JLabel root_dir_Label;
 	private JTable table;
@@ -147,6 +147,12 @@ public class TagSystemMainGUI extends JFrame {
 				}					
 			}
 		});
+		textField.addMouseListener(new MouseAdapter() {
+ 			@Override
+ 			public void mouseClicked(MouseEvent e) { 				
+ 				selectedRow = -1;
+ 			}
+ 		});
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.anchor = GridBagConstraints.NORTH;
 		gbc_textField.insets = new Insets(0, 0, 5, 50);
@@ -172,8 +178,8 @@ public class TagSystemMainGUI extends JFrame {
 				  }
 				  tagSystem.scanUptate();
 				  refreshTable(tableData);
-			  }
-			    
+			  }		
+			  selectedRow = -1;
 		  }
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -183,13 +189,48 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton.gridy = 0;
 		contentPane.add(btnEdit, gbc_btnNewButton);
 		
-		btnNewButton_1 = new JButton("Clear");
+		btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener()
+		{
+		  public void actionPerformed(ActionEvent e)
+		  {
+			  //if select a file
+			  if(selectedRow>=0){
+				  //if file exist
+				  if(tableData.get(selectedRow).isExist){
+					  int yes_no=JOptionPane.showConfirmDialog(null,"Are you sure you want to clear this file all tags? ", "Clear All Tags", JOptionPane.YES_NO_OPTION);
+					  //confirm to clear all tags
+					  if(yes_no==0){
+						  tagSystem.setConnected(tableData.get(selectedRow),
+						    		new ArrayList<Tag>());
+						  tagSystem.scanUptate();
+						  refreshTable(tableData);
+					  }
+				  }
+				  //if file not exist
+				  else{
+					  int yes_no=JOptionPane.showConfirmDialog(null,"Are you sure you want to clear this file all tags?\nthe origin file don't exist, if you clear all tags will cause this file(in database record) be deleted", "Clear All Tags", JOptionPane.YES_NO_OPTION);
+					  //confirm to clear all tags
+					  if(yes_no==0){
+						  tableData.remove(selectedRow);
+						  tagSystem.scanUptate();
+						  refreshTable(tableData);
+					  }
+				  }
+			  }
+			  //if not select a file
+			  else{
+				  JOptionPane.showMessageDialog(null,"not select any file, Please select one.", "Warning", JOptionPane.ERROR_MESSAGE);
+			  }
+			  selectedRow = -1;
+		  }
+		});
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.anchor = GridBagConstraints.NORTH;
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_1.gridx = 2;
 		gbc_btnNewButton_1.gridy = 0;
-		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
+		contentPane.add(btnClear, gbc_btnNewButton_1);
 		
 		btnNewButton_2 = new JButton("Remove");
 		btnNewButton_2.addActionListener(new ActionListener() {
@@ -199,8 +240,10 @@ public class TagSystemMainGUI extends JFrame {
 						        "Remove file record don't exist", JOptionPane.OK_CANCEL_OPTION)
 						        	== 0){
 					tableData.remove(selectedRow);
+					tagSystem.scanUptate();
 					refreshTable(tableData);
 				}
+				selectedRow = -1;
 			}
 		});
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
@@ -261,7 +304,7 @@ public class TagSystemMainGUI extends JFrame {
 	      public void valueChanged(ListSelectionEvent e) {
 	    	  selectedRow = table.getSelectedRow();
 	      }
-	    });	   
+	    });
 	    
 		MyRenderer myRenderer = new MyRenderer();
 		table.setDefaultRenderer(Object.class, myRenderer);
@@ -293,7 +336,7 @@ public class TagSystemMainGUI extends JFrame {
 			for(Tag t : d.tags)
 				tags += t.name+", ";
 			tmodel.addRow(new Object[]{d.getPath(), tags});
-		}
+		}		
 	}
 	
 	String getTableData(int row, int col){

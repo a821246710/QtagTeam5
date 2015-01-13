@@ -96,7 +96,15 @@ public class TagSystem {
 	}
 	
 	void setConnected(Data data, ArrayList<Tag> ALT){
+		//update data.tags.t with ALT
+		for(Tag t : data.tags){
+			if(!ALT.contains(t)){
+				t.data.remove(data);
+			}
+		}
+		//update data.tags
 		data.tags = ALT;
+		//set tag.data to have data in there
 		for(Tag t : ALT){
 			if(!t.data.contains(data))
 				t.data.add(data);
@@ -113,7 +121,7 @@ public class TagSystem {
 		ArrayList<Tag> tags = parseTags(str,"&&");
 		
 		//find data that exist in every tags that we parsed
-		for(Tag t : tags){
+		for(Tag t : tags){			
 			//check the data we find has every tag that we parsed
 			for(Data d : t.data){
 				boolean in_all_tags=true;
