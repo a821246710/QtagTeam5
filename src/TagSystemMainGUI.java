@@ -66,7 +66,7 @@ public class TagSystemMainGUI extends JFrame {
 	private JButton btnEdit;
 	private JButton btnNewButton_1;
 	private JButton btnNewButton_2;
-	private JLabel lblNewLabel;
+	private JLabel root_dir_Label;
 	private JTable table;
 	private DefaultTableModel tmodel;
 	
@@ -210,7 +210,29 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton_2.gridy = 0;
 		contentPane.add(btnNewButton_2, gbc_btnNewButton_2);
 		
-		lblNewLabel = new JLabel("Root Directory : " + tagSystem.flieManager.getRootDirectory().getAbsolutePath().toString());
+		root_dir_Label = new JLabel("Root Directory : " + tagSystem.flieManager.getRootDirectory().getAbsolutePath().toString());
+		root_dir_Label.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				int diatemp=JOptionPane.showConfirmDialog(null,"Are you sure you want to reset Root Directory? ", "Reset Root Directory ", JOptionPane.YES_NO_OPTION);
+				if(diatemp== 0){
+					String input=JOptionPane.showInputDialog("Please enter new Root Directory");
+					if(input!=null && input.length()!=0){
+						if(new File(input).isDirectory()){
+							if(tagSystem.flieManager.setRootDirectory(input))
+								root_dir_Label.setText("Root Directory : " + tagSystem.flieManager.getRootDirectory().getAbsolutePath().toString());
+							tagSystem.scanUptate();
+							refreshTable(tableData);
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"Invalid Directory, Please enter again.", "Warning", JOptionPane.ERROR_MESSAGE);
+						}
+					}				
+				}								
+			}					
+		});
+		
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 4;
 		gbc_lblNewLabel.weighty = 10.0;
@@ -218,7 +240,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_lblNewLabel.insets = new Insets(0, 10, 5, 5);
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 1;
-		contentPane.add(lblNewLabel, gbc_lblNewLabel);
+		contentPane.add(root_dir_Label, gbc_lblNewLabel);
 		
 		tmodel = new DefaultTableModel(){
 			@Override

@@ -4,25 +4,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 
 
 public class FileManager {
 	
 	private File dbPath = new File("./data.db");
-	private File rootDirectory = getRootDirectory();
+	private File rootDirectory = getRootDirectoryFromDB();
 	
 	public FileManager() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public File getRootDirectory(){
+	public boolean setRootDirectory(String newRootDirectory){
+		try{
+			rootDirectory = new File(newRootDirectory);
+			return true;
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("somthing error");
+		}	
+		return false;
+	}
+	
+	private File getRootDirectoryFromDB(){
 		String path = "";
 		
 		//try to load Data
@@ -40,6 +48,10 @@ public class FileManager {
 		}	
 		
 		return new File(path);
+	}
+	
+	public File getRootDirectory(){
+		return rootDirectory;
 	}
 	
 	private void buildDB(){
