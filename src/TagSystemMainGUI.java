@@ -65,6 +65,7 @@ public class TagSystemMainGUI extends JFrame {
 	
 	
 	public static TagSystemMainGUI frame;
+	private CFrame loginFrame = new CFrame();
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnEdit;
@@ -80,7 +81,7 @@ public class TagSystemMainGUI extends JFrame {
 	private JMenuBar menuBar;
 	private JMenuItem mntmAbout;
 	private Component glue;
-	private JLabel lblNewLabel_1;
+	public static JLabel labelAcc;
 	
 	/**
 	 * 
@@ -88,7 +89,7 @@ public class TagSystemMainGUI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		
-		CFrame frame1 = new CFrame();
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -122,8 +123,8 @@ public class TagSystemMainGUI extends JFrame {
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		lblNewLabel_1 = new JLabel("Account:");
-		menuBar.add(lblNewLabel_1);
+		labelAcc = new JLabel("Account:");
+		menuBar.add(labelAcc);
 		
 		Component horizontalGlue = Box.createHorizontalGlue();
 		horizontalGlue.setBackground(UIManager.getColor("MenuItem.background"));
@@ -131,6 +132,17 @@ public class TagSystemMainGUI extends JFrame {
 		
 		
 		mntmAbout = new JMenuItem("Logout");
+		mntmAbout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				frame.setVisible(false);
+				loginFrame.reset();
+				loginFrame.auth.logout();
+				loginFrame.setVisible(true);			
+			}
+		});
+		mntmAbout.setHorizontalAlignment(SwingConstants.RIGHT);
 		menuBar.add(mntmAbout);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(25, 25, 15, 25));

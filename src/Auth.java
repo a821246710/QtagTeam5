@@ -25,6 +25,8 @@ public class Auth {
 				String id = account.getId();
 				String encryptStr = account.getEncryptPassword();
 				if(id.equals(acc[0]) && encryptStr.equals(acc[1])){
+					this.account = account;
+					
 					if(index == 0)
 						role = Role.FILE_MANAGER;
 					else
