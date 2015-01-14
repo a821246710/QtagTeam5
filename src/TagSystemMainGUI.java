@@ -60,7 +60,11 @@ import java.awt.event.WindowEvent;
 
 public class TagSystemMainGUI extends JFrame {
 
-	private static TagSystemMainGUI frame;
+	
+	
+	
+	
+	public static TagSystemMainGUI frame;
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnEdit;
@@ -79,14 +83,17 @@ public class TagSystemMainGUI extends JFrame {
 	private JLabel lblNewLabel_1;
 	
 	/**
+	 * 
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
+		CFrame frame1 = new CFrame();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					frame = new TagSystemMainGUI();
-					frame.setVisible(true);
+					frame.setVisible(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
