@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 import java.awt.event.*;
+import java.io.Console;
 
 class CFrame extends JFrame implements ActionListener{
 	JLabel lblAccount = new JLabel("Account");
@@ -34,18 +35,17 @@ class CFrame extends JFrame implements ActionListener{
 	JButton btnOK = new JButton("LOGIN");
 	JLabel lblResult = new JLabel("");
 
-
-
+	Auth auth = new Auth();
+	
 	CFrame(){
-		setTitle("QTag Login");											//�إߤ@�ӷs��A�ó]�w�����D�C��r
+		setTitle("QTag Login");
 		setLocation(200,150);
-		setSize(300,250);												//�]�w��b�ù��W��ܪ���m�P�j�p�A�i�X�ּg��setBounds(100, 120, 400, 200);(�ù���m�B��j�p)
-		setVisible(true);												//�]�w��i�H��ܦb�ù��W
+		setSize(300,250);
+		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
 		
 
-		//�]�w���һP��r���P���s
 		lblAccount.setBounds(10,10,200,20);
 		add(lblAccount);
 
@@ -73,15 +73,13 @@ class CFrame extends JFrame implements ActionListener{
 		if(e.getSource() == btnOK){
 			String AC = txtAccountInput.getText();
 			String PW = txtPasswordInput.getText();
-			String ManagerAccount = "Xia100K";
-			String UserAccount = "jim1217";
-			String ManagerPassword = "3345678";
-			String UserPassword = "b10115038";
-			if(AC.compareTo(ManagerAccount)==0 && PW.compareTo(ManagerPassword)==0 || AC.compareTo(UserAccount)==0 && PW.compareTo(UserPassword)==0){
+
+			Account acc = new Account(AC, PW);
+			
+			if(auth.login(acc)){
 				lblResult.setText("Success");
 				TagSystemMainGUI.frame.setVisible(true);
 				setVisible(false);
-				
 			}
 			else{
 				lblResult.setText("Failure");
