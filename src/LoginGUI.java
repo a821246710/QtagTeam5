@@ -6,9 +6,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -31,7 +33,7 @@ class CFrame extends JFrame implements ActionListener{
 	JLabel lblAccount = new JLabel("Account");
 	JTextField txtAccountInput = new JTextField("");
 	JLabel lblPassword = new JLabel("Password");
-	JTextField txtPasswordInput = new JTextField("");
+	JTextField txtPasswordInput = new JPasswordField("");
 	JButton btnOK = new JButton("LOGIN");
 	JLabel lblResult = new JLabel("");
 
@@ -44,7 +46,6 @@ class CFrame extends JFrame implements ActionListener{
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
-		
 
 		lblAccount.setBounds(10,10,200,20);
 		add(lblAccount);
@@ -66,7 +67,15 @@ class CFrame extends JFrame implements ActionListener{
 		
 		lblResult.setBounds(110,140,150,30);
 		add(lblResult);
+
 		
+	}
+	
+	public void keyPressed(KeyEvent e) {
+	    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+	    	btnOK.doClick();
+	    }
+
 	}
 	
 	public void resetText(){
