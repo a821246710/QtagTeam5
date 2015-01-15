@@ -69,9 +69,9 @@ class CFrame extends JFrame implements ActionListener{
 		
 	}
 	
-	public void reset(){
-		lblAccount.setText("");
-		lblPassword.setText("");
+	public void resetText(){
+		txtAccountInput.setText("");
+		txtPasswordInput.setText("");
 	}
 	
 	public void actionPerformed(ActionEvent e){
@@ -82,9 +82,9 @@ class CFrame extends JFrame implements ActionListener{
 			Account acc = new Account(AC, PW);
 			
 			if(auth.login(acc)){
-				lblResult.setText("Success");
 				TagSystemMainGUI.frame.setVisible(true);
 				TagSystemMainGUI.labelAcc.setText("Account: " + auth.getAccount().getId());
+				resetText();
 				setVisible(false);
 			}
 			else{

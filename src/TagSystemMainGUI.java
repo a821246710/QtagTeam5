@@ -61,16 +61,13 @@ import java.awt.event.WindowEvent;
 public class TagSystemMainGUI extends JFrame {
 
 	
-	
-	
-	
 	public static TagSystemMainGUI frame;
-	private CFrame loginFrame = new CFrame();
+	private static CFrame loginFrame;
 	private JPanel contentPane;
 	private JTextField textField;
 	private JButton btnEdit;
 	private JButton btnClear;
-	private JButton btnNewButton_2;
+	private JButton btnRemove;
 	private JLabel root_dir_Label;
 	private JTable table;
 	private DefaultTableModel tmodel;
@@ -94,7 +91,7 @@ public class TagSystemMainGUI extends JFrame {
 			public void run() {
 				try {
 					frame = new TagSystemMainGUI();
-					frame.setVisible(false);
+					loginFrame = new CFrame();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -118,8 +115,7 @@ public class TagSystemMainGUI extends JFrame {
 		setTitle("QTag");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		
-		
+
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
@@ -135,9 +131,7 @@ public class TagSystemMainGUI extends JFrame {
 		mntmAbout.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
 				frame.setVisible(false);
-				loginFrame.reset();
 				loginFrame.auth.logout();
 				loginFrame.setVisible(true);			
 			}
@@ -251,8 +245,8 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton_1.gridy = 0;
 		contentPane.add(btnClear, gbc_btnNewButton_1);
 		
-		btnNewButton_2 = new JButton("Remove");
-		btnNewButton_2.addActionListener(new ActionListener() {
+		btnRemove = new JButton("Remove");
+		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(selectedRow>=0 && !tableData.get(selectedRow).isExist &&
 						JOptionPane.showConfirmDialog((Component) null, "Are you sure?",
@@ -270,7 +264,7 @@ public class TagSystemMainGUI extends JFrame {
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton_2.gridx = 3;
 		gbc_btnNewButton_2.gridy = 0;
-		contentPane.add(btnNewButton_2, gbc_btnNewButton_2);
+		contentPane.add(btnRemove, gbc_btnNewButton_2);
 		
 		root_dir_Label = new JLabel("Root Directory : " + tagSystem.flieManager.getRootDirectory().getAbsolutePath().toString());
 		root_dir_Label.addMouseListener(new MouseAdapter() {
@@ -339,11 +333,26 @@ public class TagSystemMainGUI extends JFrame {
 		table.getTableHeader().setReorderingAllowed(false);
 	}
 	
+	@Override
+	public void setVisible(boolean b) {
+		// TODO Auto-generated method stub
+		super.setVisible(b);
+		if(loginFrame.auth.getRole() == Role.DESIGNER){
+			funcitonVisible(false);
+		}
+	}
+	
 	void init(){
 		//load data
 		tagSystem.flieManager.fetchAllFromDB(tagSystem.data,tagSystem.tags);
 		//update file
 		tagSystem.scanUptate();
+	}
+	
+	void funcitonVisible(boolean bool){
+		btnEdit.setVisible(bool);
+		btnClear.setVisible(bool);
+		btnRemove.setVisible(bool);
 	}
 	
 	//refresh table with input data
