@@ -352,8 +352,14 @@ public class TagSystemMainGUI extends JFrame {
 		tableData = data;
 		for(Data d : data){
 			String tags="";
-			for(Tag t : d.tags)
-				tags += t.name+", ";
+			
+			for(Tag t : d.tags){
+				if(t == d.tags.get(d.tags.size() - 1))
+					tags += t.name;
+				else
+					tags += t.name + ", ";
+			}
+			
 			tmodel.addRow(new Object[]{d.getPath(), tags});
 		}		
 	}
