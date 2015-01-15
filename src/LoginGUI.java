@@ -70,14 +70,7 @@ class CFrame extends JFrame implements ActionListener{
 
 		
 	}
-	
-	public void keyPressed(KeyEvent e) {
-	    if (e.getKeyCode()==KeyEvent.VK_ENTER){
-	    	btnOK.doClick();
-	    }
 
-	}
-	
 	public void resetText(){
 		txtAccountInput.setText("");
 		txtPasswordInput.setText("");

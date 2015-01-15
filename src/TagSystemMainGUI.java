@@ -339,6 +339,8 @@ public class TagSystemMainGUI extends JFrame {
 		super.setVisible(b);
 		if(loginFrame.auth.getRole() == Role.DESIGNER){
 			funcitonVisible(false);
+		}else{
+			funcitonVisible(true);
 		}
 	}
 	
